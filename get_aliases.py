@@ -77,15 +77,10 @@ def getAllNumberOfN(data):
 
 
 try:
-    file_path = "stddata.json"
+    input_file = "stddata.json"
     output_file = "output.txt"
 
-    # exclude_strings = ["_na_", "_upsilon", "_lambda", "_omega", "_gamma", "_alpha"]
-    needed_string = []
-
-    exclude_strings = []
-    # needed_string = ["_na_"]
-    with open(file_path, "r") as file:
+    with open(input_file, "r") as file:
         json_data = json.load(file)
         # Get all number of N to find maxN value, then change it to the correct value
         allnums = getAllNumberOfN(json_data)
@@ -98,7 +93,11 @@ try:
 
         maxN = allnums[-1] + 1
 
-        #TODO: uncomment 1 of these below line to get the result
+        #TODO: uncomment below lines of code to get the result
+        # exclude_strings = ["_na_", "_upsilon", "_lambda", "_omega", "_gamma", "_alpha"]
+        needed_string = []
+        exclude_strings = []
+        # needed_string = ["_na_"]
         result = getAllAliasHavingPdfMappingOfN(maxN, json_data, needed_string, exclude_strings)
         # result = getAllAliasNotMatchWithPDFAnnotation(maxN, json_data, needed_string, exclude_strings)
 
@@ -108,6 +107,6 @@ try:
         else:
             print("No value found", result)
 except FileNotFoundError:
-    print(f"File '{file_path}' not found")
+    print(f"File '{input_file}' not found")
 except json.JSONDecodeError:
     print("Error decoding JSON")
