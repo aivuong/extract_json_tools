@@ -65,15 +65,17 @@ def getAllAliasNotMatchWithPDFAnnotation(maxN, data, needed_string=None, exclude
 
 def getAllNumberOfN(data):
     result = set()
+    total_mfn_fields = []
 
-    pdf_annotatipn = sorted(findAliasWithKeyUIpdfMappingContain(data, [], [], False))
-    for anno in pdf_annotatipn:
-        match = re.match(r"N(\d+)_", anno)
+    aliases = sorted(findAliasWithKeyUIpdfMappingContain(data, [], [], False))
+    for alias in aliases:
+        match = re.search(r"N(\d+)_", alias)
         if match:
             num = int(match.group(1))
             result.add(num)
+            total_mfn_fields.append(alias)
 
-    return sorted(result)
+    return sorted(result), total_mfn_fields
 
 
 try:
@@ -83,10 +85,11 @@ try:
     with open(input_file, "r") as file:
         json_data = json.load(file)
         # Get all number of N to find maxN value, then change it to the correct value
-        allnums = getAllNumberOfN(json_data)
+        allnums, total_fields = getAllNumberOfN(json_data)
         if allnums:
             print()
-            # print(f"allnums: {allnums}")
+            # write_results_to_file(total_fields, "MFN_field_alias.py")
+            # print(f"total fields that have format as N{{number}}_ in pdf aliastation: {len(total_fields)} \nallnums: {allnums}")
         else:
             print("No number found")
             exit(0)
@@ -94,12 +97,12 @@ try:
         maxN = allnums[-1] + 1
 
         #TODO: uncomment below lines of code to get the result
-        # exclude_strings = ["_na_", "_upsilon", "_lambda", "_omega", "_gamma", "_alpha"]
+        exclude_strings = ["_na_", "_upsilon", "_lambda", "_omega", "_gamma", "_alpha"]
         needed_string = []
-        exclude_strings = []
-        # needed_string = ["_na_"]
-        result = getAllAliasHavingPdfMappingOfN(maxN, json_data, needed_string, exclude_strings)
+        # exclude_strings = []
+        # needed_string = ["_upsilon"]
         # result = getAllAliasNotMatchWithPDFAnnotation(maxN, json_data, needed_string, exclude_strings)
+        result = getAllAliasHavingPdfMappingOfN(maxN, json_data, needed_string, exclude_strings)
 
         if result:
             print(f"total keys: {len(result)}")
